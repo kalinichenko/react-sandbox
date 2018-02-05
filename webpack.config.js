@@ -1,8 +1,17 @@
 var webpack = require('webpack');
 var api = require('./api');
 
+var PORT = 3333;
+
 module.exports = {
-  entry: ['./src/index.js'],
+
+  entry: [
+    'react-hot-loader/patch',
+    `webpack-dev-server/client?http://localhost:${PORT}`, // inline mode
+    'webpack/hot/dev-server', // reloads when applying HMR fails
+    // 'webpack/hot/only-dev-server', // doesn't reload
+    './src/index.js'
+  ],
   output: {
     filename: 'bundle.js',
     path: __dirname + "/public",
@@ -19,12 +28,19 @@ module.exports = {
     ]
   },
   devServer: {
+    hot: true,
     historyApiFallback: true,
     contentBase: __dirname + "/public",
     compress: true,
-    port: 3333,
+    port: PORT,
     before(app) {
       api(app)
     }
-  }
+  },
+  plugins: [
+    // enable HMR globally
+    new webpack.HotModuleReplacementPlugin(),
+    // prints more readable module names in the browser console on HMR updates
+    new webpack.NamedModulesPlugin(),
+  ]
 };

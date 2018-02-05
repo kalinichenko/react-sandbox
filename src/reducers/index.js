@@ -1,9 +1,7 @@
 import books from './books';
 import details from './details';
 
-const rootReducer = {
+export default {
   books,
   details,
 }
-
-export default rootReducer;

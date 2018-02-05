@@ -1,7 +1,7 @@
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import promiseMiddleware from 'redux-promise-middleware';
-import rootReducer from './reducers';
+import reducers from './reducers';
 
 const middlewares = [
   thunkMiddleware,
@@ -15,6 +15,15 @@ const preloadedState = window.__PRELOADED_STATE__
 delete window.__PRELOADED_STATE__
 
 
-const store = createStore(combineReducers(rootReducer), preloadedState, composeEnhancers(applyMiddleware(...middlewares)));
+const store = createStore(combineReducers(reducers), preloadedState, composeEnhancers(applyMiddleware(...middlewares)));
+
+
+if(module.hot) {
+  // Enable Webpack hot module replacement for reducers
+  module.hot.accept('./reducers', () => {
+    const nextReducer = require('./reducers/index').default;
+    store.replaceReducer(combineReducers(nextReducer));
+  });
+}
 
 export default store;
