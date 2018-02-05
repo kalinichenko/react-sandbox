@@ -11,6 +11,7 @@ import {booksSelector} from '../selectors/books';
 import { BOOKS_REQUEST } from '../constants/books';
 import {List, ListItem} from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
+import styled from 'styled-components';
 
 const BookType = shape({
   id: string.isRequired,
@@ -18,14 +19,12 @@ const BookType = shape({
   title: string.isRequired,
 });
 
-const styles = {
-  progress: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-}
+const Centered = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 class Books extends React.Component {
   static propTypes = {
@@ -43,16 +42,16 @@ class Books extends React.Component {
   render() {
     if (this.props.isFulfilled) {
       const books = map(this.props.data, (book) =>
-        <Link to={book.id} key={book.id} style={{ textDecoration: 'none' }}>
-          <ListItem>{book.title}</ListItem>
-        </Link>
-      );
+      <Link to={book.id} key={book.id} style={{ textDecoration: 'none' }}>
+        <ListItem primaryText={book.title} secondaryText={book.isbn13}/>
+      </Link>
+    );
 
-      return <List>{books}</List>;
+    return <List>{books}</List>;
     } else if (this.props.isRejected) {
       return <span>{this.props.error}</span>
     }
-    return <div style={styles.progress}><CircularProgress /></div>;
+    return <Centered><CircularProgress /></Centered>;
   }
 }
 

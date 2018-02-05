@@ -3,20 +3,19 @@ import {connect} from 'react-redux';
 import {get} from 'lodash';
 import CircularProgress from 'material-ui/CircularProgress';
 import {string, arrayOf, bool, shape} from 'prop-types';
+import styled from 'styled-components';
 
 import {getDetails} from '../actions/details';
 import {
   detailsSelector,
 } from '../selectors/details';
 
-const styles = {
-  progress: {
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-}
+const Centered = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const DetailsType = shape({
   description: string.isRequired,
@@ -41,7 +40,7 @@ class Details extends React.Component {
     } else if (this.props.isRejected) {
       return <span>{this.props.error}</span>
     }
-    return <div style={styles.progress}><CircularProgress /></div>;
+    return <Centered><CircularProgress /></Centered>;
   }
 }
 

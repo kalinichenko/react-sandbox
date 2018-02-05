@@ -8,12 +8,14 @@ import api from '../api';
 import books from '../api/books';
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux';
 import rootReducer from './reducers';
+import { ServerStyleSheet } from 'styled-components';
 
 const port = 4444;
 const server = express();
-const html = ({ body, preloadedState }) => `
+const html = ({ body, styles, preloadedState }) => `
   <html>
     <head>
+      ${styles}
     </head>
     <body>
       <div id="root">${body}</div>
@@ -31,6 +33,9 @@ api(server);
 server.use('/public', express.static('public'))
 
 server.get('/', (req, res) => {
+  const sheet = new ServerStyleSheet(); // <-- creating out stylesheet
+  const styles = sheet.getStyleTags(); // <-- getting all the tags from the sheet
+
   let context = {}; // This context object contains the results of the render
 
   const preloadedState = {books: {data: books, isFulfilled: true,}}
@@ -48,6 +53,7 @@ server.get('/', (req, res) => {
   res.send(
     html({
       body,
+      styles,
       preloadedState,
     })
   );
