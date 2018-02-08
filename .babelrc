@@ -1,7 +1,8 @@
 {
   "presets": [
     "stage-0",
-    "react"
+    "react",
+    "babel-preset-expo"
   ],
   "plugins": ["react-hot-loader/babel"]
 }

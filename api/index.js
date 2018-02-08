@@ -13,10 +13,10 @@ module.exports = function(app) {
         var error = title ? 'Details for item ' + title + ' not found' : 'Page not found';
         res.send({error});
       }
-    }, 1000);
+    }, 500);
   });
 
   app.get('/api/books/', function(req, res) {
-    setTimeout(() => res.send({data: books}), 1000);
+    setTimeout(() => res.send({data: books}), 500);
   });
 }

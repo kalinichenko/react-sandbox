@@ -3,7 +3,7 @@ import {LOAD_DETAILS} from '../constants/details';
 
 export const getDetails = (id) => (dispatch, getState) => {
   const promise = xhr.get({
-    url: '/api/books',
+    path: '/api/books',
     type: LOAD_DETAILS,
     meta: {resourceId: id}
   });

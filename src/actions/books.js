@@ -4,7 +4,7 @@ import {LOAD_BOOKS, LOAD_BOOKS_REJECTED} from '../constants/books';
 export const getBooks = () => (dispatch, getState) => {
   const promise = xhr.get({
     type: LOAD_BOOKS,
-    url: '/api/books',
+    path: '/api/books',
   });
   dispatch(promise).catch(error => {
     // send error to the tracking system

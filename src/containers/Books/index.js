@@ -6,12 +6,13 @@ import {
 } from 'lodash';
 import {Link} from 'react-router-dom';
 import {string, arrayOf, bool, shape} from 'prop-types';
-import {getBooks} from '../actions/books';
-import {booksSelector} from '../selectors/books';
-import { BOOKS_REQUEST } from '../constants/books';
 import {List, ListItem} from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
 import styled from 'styled-components';
+
+import {getBooks} from '../../actions/books';
+import {booksSelector} from '../../selectors/books';
+import { BOOKS_REQUEST } from '../../constants/books';
 
 const BookType = shape({
   id: string.isRequired,
@@ -42,12 +43,11 @@ class Books extends React.Component {
   render() {
     if (this.props.isFulfilled) {
       const books = map(this.props.data, (book) =>
-      <Link to={book.id} key={book.id} style={{ textDecoration: 'none' }}>
-        <ListItem primaryText={book.title} secondaryText={book.isbn13}/>
-      </Link>
-    );
-
-    return <List>{books}</List>;
+        <Link to={book.id} key={book.id} style={{ textDecoration: 'none' }}>
+          <ListItem primaryText={book.title} secondaryText={book.isbn13}/>
+        </Link>
+      );
+      return <List>{books}</List>;
     } else if (this.props.isRejected) {
       return <span>{this.props.error}</span>
     }

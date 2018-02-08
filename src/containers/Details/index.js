@@ -5,10 +5,10 @@ import CircularProgress from 'material-ui/CircularProgress';
 import {string, arrayOf, bool, shape} from 'prop-types';
 import styled from 'styled-components';
 
-import {getDetails} from '../actions/details';
+import {getDetails} from '../../actions/details';
 import {
   detailsSelector,
-} from '../selectors/details';
+} from '../../selectors/details';
 
 const Centered = styled.div`
   height: 100%;
