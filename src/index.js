@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import store from './store';
-import App from './containers/App';
+import App from './containers/';
 import {Provider} from 'react-redux';
 import BrowserRouter from 'react-router-dom/BrowserRouter';
 import { AppContainer } from 'react-hot-loader'
@@ -21,7 +21,7 @@ const render = () => {
 render();
 
 if (module.hot) {
-  module.hot.accept('./containers/App', function() {
+  module.hot.accept('./containers/index.js', function() {
     render();
   })
 }

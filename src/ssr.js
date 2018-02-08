@@ -3,7 +3,7 @@ import React from 'react';
 import StaticRouter from 'react-router-dom/StaticRouter';
 import { renderToString } from 'react-dom/server';
 import {Provider} from 'react-redux';
-import App from './containers/App';
+import App from './containers/';
 import api from '../api';
 import books from '../api/books';
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux';

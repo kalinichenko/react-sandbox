@@ -1,12 +1,15 @@
 require('es6-promise').polyfill();
-import 'isomorphic-fetch';
+import fetchPonyfill from 'fetch-ponyfill';
 import {get} from 'lodash';
 
+const { fetch } = fetchPonyfill(Promise);
+const origin = get(global || window, 'location.origin', 'http://localhost:3333')
+
 export default {
-  get: ({type, url, meta, dispatch}) => {
+  get: ({type, path, meta, dispatch}) => {
     const resourceId = get(meta, 'resourceId');
-    const _url = resourceId ? `${url}/${resourceId}` : url;
-    const promise = fetch(_url)
+    const _path = resourceId ? `${path}/${resourceId}` : path;
+    const promise = fetch(`${origin}${_path}`)
       .then(res => {
         if (res.status >= 400) {
           throw new Error("Bad response from server");
