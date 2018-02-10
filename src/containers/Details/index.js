@@ -1,11 +1,10 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {get} from 'lodash';
+import { connect } from 'react-redux';
 import CircularProgress from 'material-ui/CircularProgress';
-import {string, arrayOf, bool, shape} from 'prop-types';
+import { string, bool, shape } from 'prop-types';
 import styled from 'styled-components';
 
-import {getDetails} from '../../actions/details';
+import { getDetails } from '../../actions/details';
 import {
   detailsSelector,
 } from '../../selectors/details';
@@ -15,7 +14,7 @@ const Centered = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 const DetailsType = shape({
   description: string.isRequired,
@@ -31,28 +30,41 @@ class Details extends React.Component {
   }
 
   componentDidMount() {
-    this.props.isFulfilled || this.props.isPending || this.props.getDetails();
+    const {
+      isPending,
+      isFulfilled,
+      loadData,
+    } = this.props;
+
+    if (!isFulfilled && !isPending) {
+      loadData();
+    }
   }
 
   render() {
-    if (this.props.isFulfilled) {
-      return <span>{this.props.data.description}</span>
-    } else if (this.props.isRejected) {
-      return <span>{this.props.error}</span>
+    const {
+      isRejected,
+      isFulfilled,
+      data,
+      error,
+    } = this.props;
+
+    if (isFulfilled) {
+      return <span>{data.description}</span>;
+    } else if (isRejected) {
+      return <span>{error}</span>;
     }
     return <Centered><CircularProgress /></Centered>;
   }
 }
 
 function mapStateToProps(state) {
-  return { details: detailsSelector(state) }
+  return { details: detailsSelector(state) };
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return {
-    ...stateProps.details[ownProps.match.params.id],
-    getDetails: () => {dispatchProps.getDetails(ownProps.match.params.id)},
-  };
-}
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+  ...stateProps.details[ownProps.match.params.id],
+  loadData: () => { dispatchProps.getDetails(ownProps.match.params.id); },
+});
 
-export default connect(mapStateToProps, {getDetails}, mergeProps)(Details);
+export default connect(mapStateToProps, { getDetails }, mergeProps)(Details);

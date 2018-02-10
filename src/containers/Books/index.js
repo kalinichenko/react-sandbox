@@ -1,18 +1,17 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
-  get,
   map,
 } from 'lodash';
-import {Link} from 'react-router-dom';
-import {string, arrayOf, bool, shape} from 'prop-types';
-import {List, ListItem} from 'material-ui/List';
+import { Link } from 'react-router-dom';
+import { string, arrayOf, bool, shape } from 'prop-types';
+import { List, ListItem } from 'material-ui/List';
 import CircularProgress from 'material-ui/CircularProgress';
 import styled from 'styled-components';
 
-import {getBooks} from '../../actions/books';
-import {booksSelector} from '../../selectors/books';
-import { BOOKS_REQUEST } from '../../constants/books';
+import { getBooks } from '../../actions/books';
+import { booksSelector } from '../../selectors/books';
+
 
 const BookType = shape({
   id: string.isRequired,
@@ -25,7 +24,7 @@ const Centered = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 
 class Books extends React.Component {
   static propTypes = {
@@ -37,27 +36,38 @@ class Books extends React.Component {
   }
 
   componentDidMount() {
-    this.props.isFulfilled || this.props.isPending || this.props.getBooks();
+    const {
+      isPending,
+      isFulfilled,
+      loadData,
+    } = this.props;
+
+    if (!isFulfilled && !isPending) {
+      loadData();
+    }
   }
 
   render() {
     if (this.props.isFulfilled) {
-      const books = map(this.props.data, (book) =>
-        <Link to={book.id} key={book.id} style={{ textDecoration: 'none' }}>
-          <ListItem primaryText={book.title} secondaryText={book.isbn13}/>
-        </Link>
-      );
+      const books = map(this.props.data, book =>
+        (
+          <Link
+            to={book.id}
+            key={book.id}
+            style={{ textDecoration: 'none' }}
+          >
+            <ListItem primaryText={book.title} secondaryText={book.isbn13} />
+          </Link>
+        ));
       return <List>{books}</List>;
     } else if (this.props.isRejected) {
-      return <span>{this.props.error}</span>
+      return <span>{this.props.error}</span>;
     }
     return <Centered><CircularProgress /></Centered>;
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return booksSelector(state);
-};
+const mapStateToProps = (state) => booksSelector(state);
 
-export default connect(mapStateToProps, {getBooks})(Books);
+export default connect(mapStateToProps, { loadData: getBooks })(Books);
 

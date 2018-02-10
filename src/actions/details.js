@@ -1,14 +1,14 @@
 import xhr from '../xhr';
-import {LOAD_DETAILS} from '../constants/details';
+import { LOAD_DETAILS } from '../constants/details';
 
-export const getDetails = (id) => (dispatch, getState) => {
+export const getDetails = id => (dispatch) => {
   const promise = xhr.get({
     path: '/api/books',
     type: LOAD_DETAILS,
-    meta: {resourceId: id}
+    meta: { resourceId: id },
   });
 
-  dispatch(promise).catch(error => {
+  dispatch(promise).catch(() => {
     // send error to the tracking system
   });
-}
+};

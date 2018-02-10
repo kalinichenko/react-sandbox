@@ -1,16 +1,12 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {get} from 'lodash';
-import {string, arrayOf, bool, shape} from 'prop-types';
+import { connect } from 'react-redux';
+import { string, bool, shape } from 'prop-types';
 import { Text, View } from 'react-native';
-import { Header, Icon } from "react-native-elements";
-import { Link } from 'react-router-native'
+import { Header, Icon } from 'react-native-elements';
+import { Link } from 'react-router-native';
 
-import {getDetails} from '../../actions/details';
-import {
-  detailsSelector,
-} from '../../selectors/details';
-
+import { getDetails } from '../../actions/details';
+import { detailsSelector } from '../../selectors/details';
 
 const DetailsType = shape({
   description: string.isRequired,
@@ -23,10 +19,18 @@ class Details extends React.Component {
     isPending: bool,
     isFulfilled: bool,
     isRejected: bool,
-  }
+  };
 
   componentDidMount() {
-    this.props.isFulfilled || this.props.isPending || this.props.getDetails();
+    const {
+      isPending,
+      isFulfilled,
+      loadData,
+    } = this.props;
+
+    if (!isFulfilled && !isPending) {
+      loadData();
+    }
   }
 
   render() {
@@ -42,9 +46,13 @@ class Details extends React.Component {
     return (
       <View>
         <Header
-          leftComponent={<Link to="/"><Icon name='chevron-left' color='#fff' /></Link>}
-        >
-        </Header>
+          leftComponent={
+            <Link to="/">
+              <Icon name="chevron-left" color="#fff" />
+            </Link>
+          }
+          centerComponent={{ text: 'REACT SANDBOX', style: { color: '#fff' } }}
+        />
         {content}
       </View>
     );
@@ -52,14 +60,14 @@ class Details extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return { details: detailsSelector(state) }
+  return { details: detailsSelector(state) };
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  return {
-    ...stateProps.details[ownProps.match.params.id],
-    getDetails: () => {dispatchProps.getDetails(ownProps.match.params.id)},
-  };
-}
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
+  ...stateProps.details[ownProps.match.params.id],
+  loadData: () => {
+    dispatchProps.getDetails(ownProps.match.params.id);
+  },
+});
 
-export default connect(mapStateToProps, {getDetails}, mergeProps)(Details);
+export default connect(mapStateToProps, { getDetails }, mergeProps)(Details);

@@ -1,17 +1,15 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
-  get,
   map,
 } from 'lodash';
-import {string, arrayOf, bool, shape} from 'prop-types';
-import { StyleSheet, Text, View, FlatList } from 'react-native';
-import { Header, List, ListItem } from "react-native-elements";
+import { string, arrayOf, bool, shape } from 'prop-types';
+import { Text, View, FlatList } from 'react-native';
+import { Header, List, ListItem } from 'react-native-elements';
 import { Link } from 'react-router-native';
 
-import {getBooks} from '../../actions/books';
-import {booksSelector} from '../../selectors/books';
-import { BOOKS_REQUEST } from '../../constants/books';
+import { getBooks } from '../../actions/books';
+import { booksSelector } from '../../selectors/books';
 
 const BookType = shape({
   id: string.isRequired,
@@ -29,22 +27,28 @@ class Books extends React.Component {
   }
 
   componentDidMount() {
-    this.props.isFulfilled || this.props.isPending || this.props.getBooks();
+    const {
+      isPending,
+      isFulfilled,
+      loadData,
+    } = this.props;
+
+    if (!isFulfilled && !isPending) {
+      loadData();
+    }
   }
 
   render() {
     let content = <Text>Loading ...</Text>;
 
     if (this.props.isFulfilled) {
-      const books = map(this.props.data, book => {
-        return {...book, key: book.id}
-      });
+      const books = map(this.props.data, book => ({ ...book, key: book.id }));
 
       content = (
-        <List>
+        <List containerStyle={{ marginTop: 0 }}>
           <FlatList
             data={books}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <Link to={item.id}>
                 <ListItem title={item.title} subtitle={item.isbn13} />
               </Link>
@@ -58,26 +62,14 @@ class Books extends React.Component {
 
     return (
       <View>
-        <Header centerComponent={{ text: 'REACT SANDBOX', style: { color: '#fff' } }}/>
+        <Header centerComponent={{ text: 'REACT SANDBOX', style: { color: '#fff' } }} />
         {content}
       </View>
     );
-
   }
 }
 
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const mapStateToProps = (state) => booksSelector(state);
 
-const mapStateToProps = (state, ownProps) => {
-  return booksSelector(state);
-};
-
-export default connect(mapStateToProps, {getBooks})(Books);
+export default connect(mapStateToProps, { loadData: getBooks })(Books);
