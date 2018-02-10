@@ -35,6 +35,10 @@ class Books extends React.Component {
     isRejected: bool,
   }
 
+  static fetchData() {
+    return getBooks();
+  }
+
   componentDidMount() {
     const {
       isPending,
@@ -52,7 +56,7 @@ class Books extends React.Component {
       const books = map(this.props.data, book =>
         (
           <Link
-            to={book.id}
+            to={`/books/${book.id}`}
             key={book.id}
             style={{ textDecoration: 'none' }}
           >

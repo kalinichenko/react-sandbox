@@ -3,7 +3,7 @@ import fetchPonyfill from 'fetch-ponyfill';
 import { get } from 'lodash';
 
 const { fetch } = fetchPonyfill(Promise);
-const origin = get(global || window, 'location.origin', 'http://localhost:3333');
+const origin = get(global || window, 'location.origin', 'http://localhost:3000');
 
 export default {
   get: ({

@@ -6,7 +6,7 @@ export const getBooks = () => (dispatch) => {
     type: LOAD_BOOKS,
     path: '/api/books',
   });
-  dispatch(promise).catch(() => {
+  return dispatch(promise).catch(() => {
     // send error to the tracking system
   });
 };

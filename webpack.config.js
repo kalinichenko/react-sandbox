@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var api = require('./api');
 
-var PORT = 3333;
+var PORT = 3000;
 
 module.exports = {
 

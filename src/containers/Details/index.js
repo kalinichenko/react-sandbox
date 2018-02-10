@@ -29,6 +29,10 @@ class Details extends React.Component {
     isRejected: bool,
   }
 
+  static fetchData(match) {
+    return getDetails(match.params.id);
+  }
+
   componentDidMount() {
     const {
       isPending,

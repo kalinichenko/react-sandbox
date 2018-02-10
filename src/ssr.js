@@ -1,17 +1,18 @@
 import express from 'express';
 import React from 'react';
-import { combineReducers, createStore } from 'redux';
-import { ServerStyleSheet } from 'styled-components';
+import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
+import { matchRoutes } from 'react-router-config';
 
 import StaticRouter from 'react-router-dom/StaticRouter';
 import { renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import App from './containers/';
 import api from '../api';
-import books from '../api/books.json';
-import rootReducer from './reducers';
 
-const port = 4444;
+import routes from './routes';
+import store from './store';
+
+const port = 3000;
 const server = express();
 const html = ({ body, styles, preloadedState }) => `
   <html>
@@ -33,28 +34,34 @@ api(server);
 
 server.use('/public', express.static('public'));
 
-server.get('/', (req, res) => {
-  const sheet = new ServerStyleSheet(); // <-- creating out stylesheet
-  const styles = sheet.getStyleTags(); // <-- getting all the tags from the sheet
-
+server.get('*', (req, res) => {
   const context = {}; // This context object contains the results of the render
+  const branch = matchRoutes(routes, req.originalUrl);
+  const promises = branch.map(({ route, match }) => {
+    const { fetchData } = route.component;
+    return fetchData instanceof Function ? store.dispatch(fetchData(match)) : Promise.resolve(null);
+  });
 
-  const preloadedState = { books: { data: books, isFulfilled: true } };
+  return Promise.all(promises).then(() => {
+    const sheet = new ServerStyleSheet(); // <-- creating out stylesheet
 
-  const store = createStore(combineReducers(rootReducer), preloadedState);
+    const body = renderToString( // eslint-disable-line
+      <StyleSheetManager sheet={sheet.instance}>
+        <Provider store={store}>
+          <StaticRouter location={req.url} context={context}>
+            <App />
+          </StaticRouter>
+        </Provider>
+      </StyleSheetManager>);
 
-  const body = renderToString( // eslint-disable-line
-    <Provider store={store}>
-      <StaticRouter location={req.url} context={context}>
-        <App />
-      </StaticRouter>
-    </Provider>);
+    const styles = sheet.getStyleTags(); // <-- getting all the tags from the sheet
 
-  res.send(html({
-    body,
-    styles,
-    preloadedState,
-  }));
+    res.send(html({
+      body,
+      styles,
+      preloadedState: store.getState(),
+    }));
+  });
 });
 
 server.listen(port);

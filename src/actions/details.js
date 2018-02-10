@@ -8,7 +8,7 @@ export const getDetails = id => (dispatch) => {
     meta: { resourceId: id },
   });
 
-  dispatch(promise).catch(() => {
+  return dispatch(promise).catch(() => {
     // send error to the tracking system
   });
 };
