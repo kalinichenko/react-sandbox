@@ -1,6 +1,6 @@
 # React web for native
 
-This is simply a sandbox, that can be used as a starting point for building app based on React.js and react-native. It's created with an idea to share business logic between web-app and native-app, but not to bring difficulties aligning UI for so different platforms.
+This is simply a sandbox, that can be used as a starting point for building platform agnostic app based with react and react-native. It's created with an idea to share business logic between web-app and native-app, but not to bring difficulties aligning UI for such a different platforms.
 
 #### `npm start`
 
